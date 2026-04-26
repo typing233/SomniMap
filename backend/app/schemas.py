@@ -16,7 +16,7 @@ class UserResponse(BaseModel):
     created_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class UserConfigUpdate(BaseModel):
@@ -33,7 +33,7 @@ class UserConfigResponse(BaseModel):
     has_api_key: bool
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class DreamCreate(BaseModel):
@@ -54,7 +54,7 @@ class DreamElementResponse(BaseModel):
     context: Optional[str]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class DreamAnalysisResponse(BaseModel):
@@ -69,7 +69,7 @@ class DreamAnalysisResponse(BaseModel):
     confidence_score: float
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class DreamResponse(BaseModel):
@@ -86,7 +86,7 @@ class DreamResponse(BaseModel):
     analysis: Optional[DreamAnalysisResponse] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class ThemeClusterResponse(BaseModel):
@@ -100,7 +100,7 @@ class ThemeClusterResponse(BaseModel):
     pattern_description: Optional[str]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class EmotionTrendItem(BaseModel):
