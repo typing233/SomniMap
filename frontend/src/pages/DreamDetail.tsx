@@ -65,6 +65,7 @@ const DreamDetail: React.FC = () => {
   const [loading, setLoading] = useState(true)
   const [analyzing, setAnalyzing] = useState(false)
   const [activeTab, setActiveTab] = useState<'content' | 'analysis'>('content')
+  const [error, setError] = useState('')
 
   const fetchDream = async () => {
     if (!id) return
@@ -82,11 +83,12 @@ const DreamDetail: React.FC = () => {
   const handleAnalyze = async () => {
     if (!id) return
     setAnalyzing(true)
+    setError('')
     try {
       await dreamAPI.analyze(parseInt(id))
       await fetchDream()
-    } catch (err) {
-      console.error('Failed to analyze dream:', err)
+    } catch (err: any) {
+      setError(err.response?.data?.detail || '解析失败，请稍后重试')
     } finally {
       setAnalyzing(false)
     }
@@ -98,8 +100,8 @@ const DreamDetail: React.FC = () => {
       try {
         await dreamAPI.delete(parseInt(id))
         navigate('/dreams')
-      } catch (err) {
-        console.error('Failed to delete dream:', err)
+      } catch (err: any) {
+        setError(err.response?.data?.detail || '删除失败，请稍后重试')
       }
     }
   }
@@ -181,6 +183,12 @@ const DreamDetail: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {error && (
+        <div className="mb-4 p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-red-300 text-sm">
+          {error}
+        </div>
+      )}
 
       <div className="flex gap-2 mb-6 border-b border-night-700/50">
         <button

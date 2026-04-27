@@ -2,7 +2,6 @@ from typing import List, Dict, Any, Optional
 from collections import Counter
 from datetime import datetime, timedelta
 import re
-import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import normalize
@@ -16,7 +15,7 @@ class DreamPatternAnalyzer:
         "追逐": ["追", "跑", "逃离", "躲避", "追捕", "追赶"],
         "坠落": ["坠", "落", "掉", "下降", "失重", "摔倒"],
         "考试": ["考试", "测验", "答题", "试卷", "考场", "复习"],
-        "迷路": ["迷路", "找不到", "迷失", "方向", "迷路"],
+        "迷路": ["迷路", "找不到", "迷失", "方向"],
         "飞翔": ["飞", "飘", "浮", "在空中", "飞翔"],
         "裸体": ["裸体", "没穿衣服", "赤裸", "裸露"],
         "牙齿脱落": ["牙掉", "牙齿脱落", "掉牙"],
