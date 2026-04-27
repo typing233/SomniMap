@@ -18,6 +18,7 @@ const DreamRecord: React.FC = () => {
   const [dreamDate, setDreamDate] = useState(new Date().toISOString().split('T')[0])
   const [saving, setSaving] = useState(false)
   const [success, setSuccess] = useState(false)
+  const [error, setError] = useState('')
   const navigate = useNavigate()
 
   const handleSubmit = async () => {
@@ -26,6 +27,7 @@ const DreamRecord: React.FC = () => {
     }
 
     setSaving(true)
+    setError('')
     try {
       const response = await dreamAPI.create({
         content: content.trim(),
@@ -38,8 +40,8 @@ const DreamRecord: React.FC = () => {
       setTimeout(() => {
         navigate(`/dreams/${response.data.id}`)
       }, 1000)
-    } catch (err) {
-      console.error('Failed to save dream:', err)
+    } catch (err: any) {
+      setError(err.response?.data?.detail || '保存失败，请稍后重试')
     } finally {
       setSaving(false)
     }
@@ -69,6 +71,11 @@ const DreamRecord: React.FC = () => {
         </div>
       ) : (
         <div className="space-y-6">
+          {error && (
+            <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-red-300 text-sm">
+              {error}
+            </div>
+          )}
           <div className="card p-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
               <div className="flex items-center gap-4">

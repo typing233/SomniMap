@@ -30,27 +30,29 @@ const emotionEmojis: Record<string, string> = {
 const DreamList: React.FC = () => {
   const [dreams, setDreams] = useState<Dream[]>([])
   const [loading, setLoading] = useState(true)
-  const [page, setPage] = useState(0)
+  const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(true)
 
   const fetchDreams = async (reset = false) => {
     setLoading(true)
+    const currentPage = reset ? 0 : page
     try {
       const response = await dreamAPI.getList({
-        skip: reset ? 0 : page * 20,
+        skip: currentPage * 20,
         limit: 20,
       })
       
       const newDreams = response.data
       if (reset) {
         setDreams(newDreams)
+        setPage(1)
       } else {
         setDreams((prev) => [...prev, ...newDreams])
+        if (newDreams.length > 0) {
+          setPage((prev) => prev + 1)
+        }
       }
       setHasMore(newDreams.length === 20)
-      if (!reset && newDreams.length > 0) {
-        setPage((prev) => prev + 1)
-      }
     } catch (err) {
       console.error('Failed to fetch dreams:', err)
     } finally {

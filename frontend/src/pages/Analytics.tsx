@@ -86,7 +86,6 @@ const Analytics: React.FC = () => {
 
     const dates = emotionTrend.map((item) => item.date)
     const intensities = emotionTrend.map((item) => item.average_intensity)
-    const dominantEmotions = emotionTrend.map((item) => item.dominant_emotion)
 
     return {
       title: {
