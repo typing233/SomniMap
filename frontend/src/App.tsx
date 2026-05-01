@@ -10,6 +10,7 @@ import DreamDetail from '@/pages/DreamDetail'
 import Analytics from '@/pages/Analytics'
 import Settings from '@/pages/Settings'
 import Welcome from '@/pages/Welcome'
+import DreamSandbox from '@/pages/DreamSandbox'
 
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated } = useAuthStore()
@@ -23,6 +24,14 @@ const App: React.FC = () => {
         <Route path="/welcome" element={<Welcome />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route
+          path="/sandbox"
+          element={
+            <PrivateRoute>
+              <DreamSandbox />
+            </PrivateRoute>
+          }
+        />
         <Route
           path="/*"
           element={

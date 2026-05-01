@@ -15,6 +15,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const navItems = [
     { path: '/record', label: '记录梦境', icon: '✨' },
     { path: '/dreams', label: '梦境列表', icon: '📖' },
+    { path: '/sandbox', label: '梦境沙盒', icon: '🎮' },
     { path: '/analytics', label: '心理地图', icon: '🗺️' },
     { path: '/settings', label: '设置', icon: '⚙️' },
   ]
