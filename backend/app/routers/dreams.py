@@ -65,13 +65,14 @@ async def analyze_dream(
     
     config = get_user_config(db, current_user.id)
     
-    if not config or not config.volcanic_api_key:
+    if not config or not config.volcanic_api_key or config.privacy_mode == 'strict':
         return await analyze_with_local_rules(dream, db)
     
     try:
         volcanic_service = VolcanicArkService(
             api_key=config.volcanic_api_key,
-            model_name=config.volcanic_model_name or "doubao-pro-32k"
+            model_name=config.volcanic_model_name or "doubao-pro-32k",
+            base_url=config.volcanic_base_url
         )
         
         elements_data = await volcanic_service.extract_elements(dream.content)

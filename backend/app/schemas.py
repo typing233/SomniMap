@@ -22,6 +22,7 @@ class UserResponse(BaseModel):
 class UserConfigUpdate(BaseModel):
     volcanic_api_key: Optional[str] = None
     volcanic_model_name: Optional[str] = None
+    volcanic_base_url: Optional[str] = None
     privacy_mode: Optional[str] = None
 
 
@@ -29,11 +30,18 @@ class UserConfigResponse(BaseModel):
     id: int
     user_id: int
     volcanic_model_name: str
+    volcanic_base_url: Optional[str] = None
     privacy_mode: str
     has_api_key: bool
 
     class Config:
         from_attributes = True
+
+
+class ConnectionTestRequest(BaseModel):
+    api_key: str
+    model_name: str
+    base_url: Optional[str] = None
 
 
 class DreamCreate(BaseModel):

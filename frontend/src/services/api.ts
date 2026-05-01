@@ -68,9 +68,18 @@ export const statisticsAPI = {
 
 export const configAPI = {
   get: () => api.get('/config/'),
-  update: (data: { volcanic_api_key?: string; volcanic_model_name?: string; privacy_mode?: string }) =>
-    api.put('/config/', data),
+  update: (data: { 
+    volcanic_api_key?: string; 
+    volcanic_model_name?: string; 
+    volcanic_base_url?: string;
+    privacy_mode?: string 
+  }) => api.put('/config/', data),
   validateKey: () => api.post('/config/validate-api-key'),
+  testConnection: (data: {
+    api_key: string;
+    model_name: string;
+    base_url?: string;
+  }) => api.post('/config/test-connection', data),
 }
 
 export default api
