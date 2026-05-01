@@ -5,12 +5,20 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+DEFAULT_VOLCANIC_BASE_URL = "https://ark.cn-beijing.volces.com/api/v3/chat/completions"
+DEFAULT_VOLCANIC_MODEL = "doubao-pro-32k"
+
 
 class VolcanicArkService:
-    def __init__(self, api_key: str, model_name: str = "doubao-pro-32k"):
+    def __init__(
+        self, 
+        api_key: str, 
+        model_name: str = DEFAULT_VOLCANIC_MODEL,
+        base_url: Optional[str] = None
+    ):
         self.api_key = api_key
         self.model_name = model_name
-        self.base_url = "https://ark.cn-beijing.volces.com/api/v3/chat/completions"
+        self.base_url = base_url or DEFAULT_VOLCANIC_BASE_URL
 
     async def analyze_dream(self, dream_content: str) -> Dict[str, Any]:
         prompt = f"""你是一位专业的梦境分析师和心理学家。请对以下梦境进行深度分析，从心理学角度解析梦境的象征意义和潜在心理线索。

@@ -4,9 +4,13 @@ from typing import Optional
 
 from app.database import get_db
 from app.models import User, UserConfig
-from app.schemas import UserConfigUpdate, UserConfigResponse
+from app.schemas import UserConfigUpdate, UserConfigResponse, ConnectionTestRequest
 from app.routers.auth import get_current_user
-from app.services.volcanic_service import VolcanicArkService
+from app.services.volcanic_service import (
+    VolcanicArkService, 
+    DEFAULT_VOLCANIC_BASE_URL,
+    DEFAULT_VOLCANIC_MODEL
+)
 
 router = APIRouter(prefix="/api/config", tags=["config"])
 
@@ -21,7 +25,8 @@ async def get_config(
     if not config:
         config = UserConfig(
             user_id=current_user.id,
-            volcanic_model_name="doubao-pro-32k",
+            volcanic_model_name=DEFAULT_VOLCANIC_MODEL,
+            volcanic_base_url=DEFAULT_VOLCANIC_BASE_URL,
             privacy_mode="standard"
         )
         db.add(config)
@@ -31,7 +36,8 @@ async def get_config(
     return UserConfigResponse(
         id=config.id,
         user_id=config.user_id,
-        volcanic_model_name=config.volcanic_model_name,
+        volcanic_model_name=config.volcanic_model_name or DEFAULT_VOLCANIC_MODEL,
+        volcanic_base_url=config.volcanic_base_url,
         privacy_mode=config.privacy_mode,
         has_api_key=bool(config.volcanic_api_key)
     )
@@ -55,6 +61,9 @@ async def update_config(
     if config_data.volcanic_model_name is not None:
         config.volcanic_model_name = config_data.volcanic_model_name
     
+    if config_data.volcanic_base_url is not None:
+        config.volcanic_base_url = config_data.volcanic_base_url
+    
     if config_data.privacy_mode is not None:
         config.privacy_mode = config_data.privacy_mode
     
@@ -64,7 +73,8 @@ async def update_config(
     return UserConfigResponse(
         id=config.id,
         user_id=config.user_id,
-        volcanic_model_name=config.volcanic_model_name,
+        volcanic_model_name=config.volcanic_model_name or DEFAULT_VOLCANIC_MODEL,
+        volcanic_base_url=config.volcanic_base_url,
         privacy_mode=config.privacy_mode,
         has_api_key=bool(config.volcanic_api_key)
     )
@@ -85,7 +95,8 @@ async def validate_api_key(
     
     service = VolcanicArkService(
         api_key=config.volcanic_api_key,
-        model_name=config.volcanic_model_name or "doubao-pro-32k"
+        model_name=config.volcanic_model_name or DEFAULT_VOLCANIC_MODEL,
+        base_url=config.volcanic_base_url
     )
     
     is_valid = await service.validate_api_key()
@@ -94,3 +105,45 @@ async def validate_api_key(
         "valid": is_valid,
         "message": "API Key验证成功" if is_valid else "API Key验证失败，请检查Key是否正确"
     }
+
+
+@router.post("/test-connection")
+async def test_connection(
+    test_data: ConnectionTestRequest,
+    current_user: User = Depends(get_current_user)
+):
+    if not test_data.api_key:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="请输入API Key"
+        )
+    
+    base_url = test_data.base_url or DEFAULT_VOLCANIC_BASE_URL
+    
+    try:
+        service = VolcanicArkService(
+            api_key=test_data.api_key,
+            model_name=test_data.model_name,
+            base_url=base_url
+        )
+        
+        is_valid = await service.validate_api_key()
+        
+        return {
+            "valid": is_valid,
+            "message": (
+                f"连接成功！已成功连接到 {base_url}" 
+                if is_valid 
+                else "连接失败，请检查 API Key、模型名称和 Base URL 是否正确"
+            ),
+            "base_url": base_url,
+            "model": test_data.model_name
+        }
+        
+    except Exception as e:
+        return {
+            "valid": False,
+            "message": f"连接失败: {str(e)}",
+            "base_url": base_url,
+            "model": test_data.model_name
+        }

@@ -25,6 +25,7 @@ class UserConfig(Base):
     user_id = Column(Integer, ForeignKey("users.id"), unique=True)
     volcanic_api_key = Column(String(255))
     volcanic_model_name = Column(String(100), default="doubao-pro-32k")
+    volcanic_base_url = Column(String(500))
     privacy_mode = Column(String(20), default="standard")
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
